@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  app:
+    container_name: fullcycle_node_container
+    build: .
+    ports:
+      - 8080:8080
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 11s docker-entrypoint.sh
+    command: node src/index.js
+    networks:
+      - node-network
+    volumes:
+      - .:/usr/src/app
+    tty: true
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: fullcycle_db_container
+    restart: always
+    tty: true
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nodedb
+    networks:
+      - node-network
+
+networks:
+  node-network:
+    driver: bridge
