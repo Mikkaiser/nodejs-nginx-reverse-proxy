@@ -4,6 +4,6 @@
 docker compose up -d --build
 ```
 
-and you can see the result in http://localhost:80<br>
+and you can see the result in http://localhost:8080<br>
 
 ;)
