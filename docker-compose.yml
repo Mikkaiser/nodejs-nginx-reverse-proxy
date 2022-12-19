@@ -3,8 +3,6 @@ services:
   app:
     container_name: fullcycle_node_container
     build: .
-    ports:
-      - 8080:8080
     entrypoint: dockerize -wait tcp://db:3306 -timeout 11s docker-entrypoint.sh
     command: node src/index.js
     networks:
@@ -14,6 +12,19 @@ services:
     tty: true
     depends_on:
       - db
+
+  nginx:
+    image: nginx
+    container_name: fullcycle_nginx_container
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
+    networks:
+      - node-network
+    depends_on:
+      - app
 
   db:
     image: mysql:5.7
